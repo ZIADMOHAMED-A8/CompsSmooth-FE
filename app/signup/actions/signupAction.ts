@@ -1,6 +1,7 @@
 "use server";
 
 import { SignupFormValues } from "@/schemas/signupSchema";
+import { signIn } from "@/app/auth"; 
 
 export interface SignupResponse {
   user: {
@@ -10,6 +11,7 @@ export interface SignupResponse {
     role: string;
   };
   accessToken: string;
+  refreshToken: string;
 }
 
 export async function signupAction(
@@ -36,6 +38,12 @@ export async function signupAction(
       data?.message || "Unable to create your account."
     );
   }
+  console.log(data)
+        await signIn("credentials", {
+        accessToken: data.data.accessToken ,
+        refreshToken: data.data.refreshToken ,
+        redirect:false
+        })
 
   return data;
 }

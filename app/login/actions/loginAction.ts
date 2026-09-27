@@ -1,6 +1,7 @@
 "use server"
+import { signIn } from "@/app/auth";
 import { LoginFormValues } from "@/schemas/loginSchema"
-
+import { redirect } from "next/navigation";
 export interface LoginResponse {
   user: {
     id: string;
@@ -32,6 +33,12 @@ export async function loginAction(
   if (!response.ok) {
     throw new Error(data?.message || "Invalid email or password.");
   }
-
+   
+           await signIn("credentials", {
+        accessToken: data.data.accessToken ,
+        refreshToken: data.data.refreshToken ,
+        redirectTo:'/'
+        })
+       
   return data;
 }
