@@ -11,12 +11,11 @@ import {
   LockKeyhole,
 } from "lucide-react";
 
-useLogin
 import {
   loginSchema,
   type LoginFormValues,
 } from "@/schemas/loginSchema";
-import { useLogin } from "./hooks/useLogin";
+import { useLogin } from "../hooks/useLogin";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +36,7 @@ export function LoginForm() {
   });
 
   function onSubmit(data: LoginFormValues) {
+    console.log('tryna submit')
     login.mutate(data);
   }
 
