@@ -2,32 +2,51 @@
 
 import { ExternalLink, MapPin } from "lucide-react";
 
-import { RunCompsResponse, ComparableProperty } from "../types/runComps.types";
+import type {
+  RunCompsResponse,
+  ComparableProperty,
+  DecimalValue,
+} from "../types/runComps.types";
 
 interface RunCompsResultsProps {
   result: RunCompsResponse;
 }
 
-function formatCurrency(value: number | null) {
-  if (value === null) return "—";
+function toNumber(value: DecimalValue | null | undefined) {
+  if (value === null || value === undefined || value === "") return null;
+
+  const numberValue =
+    typeof value === "number" ? value : Number(value);
+
+  return Number.isFinite(numberValue) ? numberValue : null;
+}
+
+function formatCurrency(value: DecimalValue | null | undefined) {
+  const numberValue = toNumber(value);
+
+  if (numberValue === null) return "--";
 
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(numberValue);
 }
 
-function formatNumber(value: number | null) {
-  if (value === null) return "—";
+function formatNumber(value: DecimalValue | null | undefined) {
+  const numberValue = toNumber(value);
 
-  return new Intl.NumberFormat("en-US").format(value);
+  if (numberValue === null) return "--";
+
+  return new Intl.NumberFormat("en-US").format(numberValue);
 }
 
 export function RunCompsResults({
   result,
 }: RunCompsResultsProps) {
   const { property, comps } = result;
+  const radius = comps.search?.radius_miles;
+  const days = comps.search?.days;
 
   return (
     <section className="mt-4 overflow-hidden rounded-[4px] border border-[#dce2e8] bg-white">
@@ -113,13 +132,17 @@ export function RunCompsResults({
             />
 
             <PropertyStat
-              label="Radius"
-              value={`${comps.search.radius_miles} mi`}
+              label="MAO"
+              value={formatCurrency(comps.deal.mao ?? property.mao)}
             />
 
             <PropertyStat
-              label="Lookback"
-              value={`${comps.search.days} days`}
+              label={radius !== undefined ? "Radius" : "Confidence"}
+              value={
+                radius !== undefined
+                  ? `${radius} mi`
+                  : `${formatNumber(comps.confidence.score)}%`
+              }
             />
           </div>
         </div>
@@ -138,9 +161,16 @@ export function RunCompsResults({
             </p>
           </div>
 
-          <span className="text-[8px] text-[#9099a6]">
-            {comps.search.radius_miles} mi radius
-          </span>
+          {(radius !== undefined || days !== undefined) && (
+            <span className="text-[8px] text-[#9099a6]">
+              {[
+                radius !== undefined ? `${radius} mi radius` : null,
+                days !== undefined ? `${days} day lookback` : null,
+              ]
+                .filter(Boolean)
+                .join(" - ")}
+            </span>
+          )}
         </div>
 
         <div className="divide-y divide-[#edf0f3]">
@@ -223,6 +253,10 @@ function CompRow({
 }: {
   comp: ComparableProperty;
 }) {
+  const baths = comp.full_baths ?? comp.baths;
+  const salePrice = comp.sale_price ?? comp.sold_price;
+  const pricePerSqft = comp.price_per_sqft ?? comp.ppsf;
+
   return (
     <div className="px-4 py-3">
       <div className="flex items-start justify-between gap-4">
@@ -245,39 +279,29 @@ function CompRow({
           </div>
 
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[8px] text-[#9099a6]">
-            <span>
-              {comp.beds} beds
-            </span>
+            <span>{comp.beds} beds</span>
 
-            <span>
-              {comp.full_baths} baths
-            </span>
+            <span>{baths} baths</span>
 
-            <span>
-              {formatNumber(comp.sqft)} sqft
-            </span>
+            <span>{formatNumber(comp.sqft)} sqft</span>
 
-            <span>
-              {comp.distance_miles.toFixed(2)} mi
-            </span>
+            <span>{comp.distance_miles.toFixed(2)} mi</span>
 
             {comp.year_built && (
-              <span>
-                Built {comp.year_built}
-              </span>
+              <span>Built {comp.year_built}</span>
             )}
           </div>
         </div>
 
         <div className="shrink-0 text-right">
           <p className="text-[10px] font-semibold text-[#18212f]">
-            {formatCurrency(comp.sold_price)}
+            {formatCurrency(salePrice)}
           </p>
 
           <p className="mt-0.5 text-[8px] text-[#9099a6]">
-            {comp.price_per_sqft
-              ? `$${Math.round(comp.price_per_sqft)}/sqft`
-              : "—"}
+            {pricePerSqft
+              ? `$${Math.round(pricePerSqft)}/sqft`
+              : "--"}
           </p>
         </div>
       </div>
@@ -286,7 +310,7 @@ function CompRow({
         <span className="text-[8px] text-[#9099a6]">
           {comp.status}
           {comp.sale_date
-            ? ` · ${new Date(comp.sale_date).toLocaleDateString()}`
+            ? ` - ${new Date(comp.sale_date).toLocaleDateString()}`
             : ""}
         </span>
 

@@ -4,6 +4,7 @@ import {
     GetRecentCompsParams,
     RecentCompsResponse,
 } from "../types/recentComps.types";
+import { customFetch } from "../helpers/customFetch";
 
 export async function getRecentCompsAction({
     page = 1,
@@ -18,7 +19,7 @@ export async function getRecentCompsAction({
 
     const apiUrl = `${process.env.BACK_END_URL}/api/properties?${searchParams.toString()}`;
 
-    const response = await fetch(apiUrl, {
+    const response = await customFetch(apiUrl, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

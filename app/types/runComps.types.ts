@@ -3,6 +3,17 @@ export interface RunCompsResponse {
   comps: CompsResult;
 }
 
+export interface RunCompsRequest {
+  address: string;
+  repairs?: number;
+  buying_costs?: number;
+  holding_costs?: number;
+  selling_costs?: number;
+  desired_profit?: number;
+}
+
+export type DecimalValue = number | string;
+
 export interface Property {
   id: string;
   address: string;
@@ -11,13 +22,15 @@ export interface Property {
   propertyId: string;
   provider: string;
   zip: string;
-  latitude: string;
-  longitude: string;
+  latitude: DecimalValue;
+  longitude: DecimalValue;
   beds: number;
-  baths: string;
+  baths: DecimalValue;
   sqft: number;
-  year_bulit: number;
+  year_bulit?: number;
+  year_built?: number;
   property_type: string;
+  mao: DecimalValue;
   createdAt: string;
 }
 
@@ -30,9 +43,12 @@ export interface CompsResult {
     baths: number;
     sqft: number;
     year_built: number | null;
+    lot_sqft?: number | null;
     latitude: number;
     longitude: number;
   };
+
+  method: string;
 
   arv: {
     low: number;
@@ -45,10 +61,19 @@ export interface CompsResult {
     label: string;
   };
 
-  mao: number;
-  comps_used: number;
+  deal: {
+    repairs: number;
+    profit: number;
+    arv_70: number;
+    mao: number;
+  };
 
-  search: {
+  deal_inputs_provided: string[];
+  comps_used: number;
+  tier: string;
+  flags: string[];
+
+  search?: {
     radius_miles: number;
     days: number;
   };
@@ -62,37 +87,46 @@ export interface ComparableProperty {
   listing_id: string | null;
 
   status: string;
+  mls_status?: string | null;
 
   formatted_address: string;
-  full_street_line: string;
-  street: string;
+  full_street_line?: string;
+  street?: string;
   unit: string | null;
 
-  city: string;
-  state: string;
-  zip_code: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
 
   beds: number;
-  full_baths: number;
+  full_baths?: number;
   half_baths: number | null;
   baths: number;
 
   sqft: number;
   year_built: number;
+  lot_sqft?: number | null;
 
+  list_price?: number | null;
   sold_price: number | null;
+  sale_price?: number | null;
   sale_date: string | null;
+  last_sold_date?: string | null;
 
   estimated_value: number | null;
 
   price_per_sqft: number | null;
   ppsf: number | null;
 
+  latitude?: number;
+  longitude?: number;
   distance_miles: number;
 
   score: number;
+  adjusted_price?: number;
   implied_arv: number;
-  analysis_weight: number;
+  analysis_weight?: number;
 
   primary_photo: string | null;
+  alt_photos?: string | null;
 }
