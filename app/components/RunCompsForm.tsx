@@ -2,9 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Search } from "lucide-react";
-import { useForm } from "react-hook-form";
+import {
+    useForm,
+    type UseFormRegister,
+} from "react-hook-form";
 import {
     runCompsSchema,
+    RunCompsInput,
     RunCompsFormValues,
 } from "../schemas/runCompsSchema";
 import { useSearchAddress } from "../hooks/useSearchAddress";
@@ -20,7 +24,7 @@ export function RunCompsForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<RunCompsFormValues>({
+    } = useForm<RunCompsInput, unknown, RunCompsFormValues>({
         resolver: zodResolver(runCompsSchema),
 
         defaultValues: {
@@ -178,7 +182,7 @@ interface MoneyInputProps {
     | "holding_costs"
     | "selling_costs"
     | "desired_profit";
-    register: any;
+    register: UseFormRegister<RunCompsInput>;
     error?: string;
 }
 

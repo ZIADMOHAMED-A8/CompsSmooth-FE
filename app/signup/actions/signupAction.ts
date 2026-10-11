@@ -2,6 +2,7 @@
 
 import { SignupFormValues } from "@/schemas/signupSchema";
 import { signIn } from "@/app/auth"; 
+import { customFetch } from "@/app/helpers/customFetch";
 
 export interface SignupResponse {
   user: {
@@ -19,7 +20,7 @@ export async function signupAction(
 ): Promise<SignupResponse> {
   const {  ...signupData } = payload;
 
-  const response = await fetch(
+  const response = await customFetch(
     `${process.env.BACK_END_URL}/api/users/signup`,
     {
       method: "POST",

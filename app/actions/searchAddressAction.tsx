@@ -1,21 +1,19 @@
 "use server";
 
 import { auth } from "../auth";
-import {
-  RunCompsFormValues,
-} from "../schemas/runCompsSchema";
-
-import {
-  RunCompsResult,
+import type {
+  RunCompsRequest,
+  RunCompsResponse,
 } from "../types/runComps.types";
+import { customFetch } from "../helpers/customFetch";
 
 export async function runCompsAction(
-  payload: RunCompsFormValues
-): Promise<RunCompsResult> {
+  payload: RunCompsRequest
+): Promise<RunCompsResponse> {
   const apiUrl = `${process.env.BACK_END_URL}/api/property`;
   const session = await auth()
   const token = `Bearer ${session?.accessToken}`
-  const response = await fetch(apiUrl, {
+  const response = await customFetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -18,7 +18,7 @@ export function PlanAction({
 }: PlanActionProps) {
   const checkout = useCreateCheckoutSession();
   const {data:currentPlan,isLoading,isError} = useGetCurrentPlan()
- 
+  console.log(currentPlan)
 
   function handleUpgrade() {
     checkout.mutate(
@@ -63,7 +63,8 @@ if (plan.plan === "ENTERPRISE") {
     </a>
   );
 }
-  const isCurrentPlan=plan.id === currentPlan?.effectiveSub?.plan.id
+  const isCurrentPlan=plan.id === currentPlan?.data?.plan?.id
+
   return (
     <button
       type="button"

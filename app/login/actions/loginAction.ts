@@ -1,7 +1,7 @@
 "use server"
 import { signIn } from "@/app/auth";
 import { LoginFormValues } from "@/schemas/loginSchema"
-import { redirect } from "next/navigation";
+import { customFetch } from "@/app/helpers/customFetch";
 export interface LoginResponse {
   user: {
     id: string;
@@ -16,7 +16,7 @@ console.log(apiUrl)
 export async function loginAction(
   payload: LoginFormValues
 ): Promise<LoginResponse> {
-  const response = await fetch(
+  const response = await customFetch(
     apiUrl,
     {
       method: "POST",
