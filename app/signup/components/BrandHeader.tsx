@@ -1,6 +1,9 @@
 import { ShieldCheck } from "lucide-react";
 
-export function BrandHeader() {
+export function BrandHeader({
+  title = "Create your account",
+  description = "Set up your property search & comp workspace",
+}: { title?: string; description?: string }) {
   return (
     <div className="text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[8px] bg-[#101a2c] shadow-sm">
@@ -22,11 +25,11 @@ export function BrandHeader() {
       </div>
 
       <h2 className="mt-1.5 text-[17px] font-semibold text-[#172033]">
-        Create your account
+        {title}
       </h2>
 
       <p className="mt-1 text-[12px] text-[#65738b]">
-        Set up your property search & comp workspace
+        {description}
       </p>
     </div>
   );

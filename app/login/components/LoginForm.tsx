@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -174,12 +175,12 @@ export function LoginForm() {
           Remember this device
         </label>
 
-        <button
-          type="button"
+        <Link
+          href="/reset-password"
           className="text-[11px] font-medium text-[#c96a00] hover:underline"
         >
           Forgot password?
-        </button>
+        </Link>
       </div>
 
       {/* SERVER ERROR */}

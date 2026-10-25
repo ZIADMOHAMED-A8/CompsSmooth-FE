@@ -2,9 +2,12 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { signupAction } from "../actions/signupAction";
+import type { SignupFormValues } from "@/schemas/signupSchema";
 
 export function useSignup() {
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: signupAction,
+    gcTime: 0,
   });
+  return mutation;
 }
