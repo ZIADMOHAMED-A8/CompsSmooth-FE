@@ -21,3 +21,13 @@ export interface UpdateProfilePayload {
   name?: string;
   email?: string;
 }
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  message: string;
+}
