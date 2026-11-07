@@ -8,6 +8,7 @@ import {
   BadgeCheck,
   CalendarDays,
   IdCard,
+  KeyRound,
   Loader2,
   RotateCcw,
   Save,
@@ -24,8 +25,10 @@ import {
 
 import { useProfile, useUpdateProfile } from "../hooks/useProfile";
 import { ProfileSkeleton } from "./ProfileSkeleton";
+import { ChangePasswordForm } from "./ChangePasswordForm";
 
 export function ProfilePage() {
+  const [activeTab, setActiveTab] = useState<"profile" | "password">("profile");
   const { data, isLoading, isError, error } = useProfile();
   const updateProfile = useUpdateProfile();
   const [successMessage, setSuccessMessage] = useState("");
@@ -146,7 +149,7 @@ export function ProfilePage() {
             </p>
 
             <h2 className="mt-1 text-[12px] font-semibold text-[#263241]">
-              Profile Information
+              Account Settings
             </h2>
           </div>
 
@@ -155,6 +158,20 @@ export function ProfilePage() {
           </span>
         </div>
 
+        <nav aria-label="Account settings sections" className="grid grid-cols-2 border-b border-[#e6e9ed] px-3 sm:flex sm:px-4">
+          <button type="button" aria-pressed={activeTab === "profile"} id="profile-tab" onClick={() => setActiveTab("profile")} className={`border-b-2 px-3 py-3 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#c96a00] ${activeTab === "profile" ? "border-[#c96a00] text-[#c96a00]" : "border-transparent text-[#697b98] hover:text-[#263241]"}`}>
+            Profile information
+          </button>
+          <button type="button" aria-pressed={activeTab === "password"} id="password-tab" onClick={() => setActiveTab("password")} className={`inline-flex items-center justify-center gap-1.5 border-b-2 px-3 py-3 text-[11px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#c96a00] ${activeTab === "password" ? "border-[#c96a00] text-[#c96a00]" : "border-transparent text-[#697b98] hover:text-[#263241]"}`}>
+            <KeyRound size={13} /> Change password
+          </button>
+        </nav>
+
+        {activeTab === "password" ? (
+          <div id="password-panel" aria-labelledby="password-tab">
+            <ChangePasswordForm />
+          </div>
+        ) : <div id="profile-panel" aria-labelledby="profile-tab">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="p-4"
@@ -237,6 +254,7 @@ export function ProfilePage() {
             </button>
           </div>
         </form>
+        </div>}
       </section>
     </div>
   );
